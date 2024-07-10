@@ -36,6 +36,8 @@ target-version = "py312"
     "S603", # Shell無しのsubprocessを許可
     "T201", # print文を許可するため
     "TRY002", # 標準のExceptionの使用を許可
+    "PLR2004", #assetの許可
+    "S101"
 ]
 
 [tool.ruff.lint.pydocstyle]
@@ -68,3 +70,20 @@ ignore_missing_imports = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-v -s"
+testpaths = [
+    "tests",
+]
+python_files = [
+    "test_*.py",
+    "*_test.py",
+]
+python_classes = [
+    "Test*",
+    "*Test",
+]
+python_functions = [
+    "test_*",
+]
