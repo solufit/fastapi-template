@@ -1,0 +1,30 @@
+{
+    //////////////
+    // mypyの設定
+    //////////////
+
+    // 設定ファイルの指定
+    "mypy-type-checker.args": [
+        "--config=pyproject.toml"
+    ],
+
+    //////////////
+    // Ruffの設定
+    //////////////
+
+    // refs: https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff
+    "[python]": {
+        // 保存時にコードを整理
+        "editor.formatOnSave": true,
+        // デフォルトのformatterにruffを指定
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.codeActionsOnSave": {
+            // 保存時にimportを整理
+            "source.organizeImports": "explicit"
+        }
+    },
+    // ruffの設定は下記ファイルから読み込み(指定が無い場合でも自動で探索されるが明示しておく)
+    "ruff.format.args": [
+        "--config=pyproject.toml"
+    ],
+}

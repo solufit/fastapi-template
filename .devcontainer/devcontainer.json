@@ -12,6 +12,17 @@
 			"packages": "htop",
 			"ppas": "ppa:deadsnakes/ppa"
 		}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"donjayamanne.python-extension-pack",
+				"njpwerner.autodocstring",
+				"ms-python.mypy-type-checker",
+				"charliermarsh.ruff"
+			]
+		}
 	}
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
