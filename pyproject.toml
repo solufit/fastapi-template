@@ -30,7 +30,6 @@ target-version = "py312"
     "ERA001", # コメントアウト文を許可
     "FBT001", # 関数の引数にbooleanを許可(TODO:見直し)
     "FBT002", # 関数の引数にbooleanを許可(TODO:見直し)
-    "INP001", # __init__.pyを必須としない
     "PT009", # assertEqualなどを使うため
     "PTH207", # glob.globを許可
     "S311", # randomを許可
