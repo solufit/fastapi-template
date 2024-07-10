@@ -1,7 +1,6 @@
 from fastapi import FastAPI
+import uvicorn
 from starlette.middleware.cors import CORSMiddleware
-from src.endpoints.v1.router import router as v1_router
-
 app = FastAPI(
     title="Templete API",
     description="Solufit Microservice Network",
@@ -14,5 +13,3 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
-
-app.include_router(v1_router, prefix="/v1")
