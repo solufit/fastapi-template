@@ -1,3 +1,4 @@
+import os  # noqa: INP001
 from logging.config import fileConfig  # noqa: INP001
 
 from alembic import context
@@ -12,11 +13,26 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
+# Assuming you have an environment variable DATABASE_URL set
+database_url = os.getenv("DATABASE_URL")
+
+if database_url is not None:
+    # Manually set the sqlalchemy.url configuration to the database URL from the environment
+    config.set_main_option("sqlalchemy.url", database_url)
+else:
+    # Handle the case when DATABASE_URL is not set
+    msg = "DATABASE_URL environment variable is not set."
+    raise ValueError(msg)
+
+# Other existing setup code...
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
+
+from database import models  # noqa: E402
+
+target_metadata = models.Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

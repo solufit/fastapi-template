@@ -39,6 +39,7 @@ target-version = "py312"
     "PLR2004", #assetの許可
     "S101"
 ]
+extend-exclude = ["database/versions"]
 
 [tool.ruff.lint.pydocstyle]
 # pydocstyleを無視しているのでこの設定は無意味だが、
