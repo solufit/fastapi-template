@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "FastAPI",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "src:app", // "main"はFastAPIアプリケーションを含むPythonファイル名（拡張子なし）、"app"はFastAPIインスタンスの変数名です。
+                "--reload",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "80"
+            ],
+            "jinja": false,
+            "console": "integratedTerminal"
+        }
+    ]
+}
