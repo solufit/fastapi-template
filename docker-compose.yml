@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:12.19-bookworm
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+    networks:
+      - solufit
+
+    env_file:
+      - .env
+
+  api:
+    build:
+      context: ./docker/api
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+
+    networks:
+      - solufit
+    
+    env_file:
+      - .env
+
+networks:
+  solufit:
+    external: true
