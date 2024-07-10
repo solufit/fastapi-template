@@ -1,11 +1,12 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import APIRouter
 
-from ...scheme.version import VersionResponse
-from ...app import app
+from src.app import app
+from src.scheme.version import VersionResponse
 
 router = APIRouter()
 
+
 @router.get("/")
-async def get_version():
+async def get_version() -> VersionResponse:
     version: str = app.version
     return VersionResponse(version=version)
