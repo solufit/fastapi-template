@@ -23,7 +23,7 @@
 				"charliermarsh.ruff"
 			]
 		}
-	}
+	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
@@ -33,7 +33,7 @@
 	// "forwardPorts": [5000, 5432],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "pip install --user -r requirements.txt",
+	"postCreateCommand": "pip install --user -r src/requirements.txt",
 
 	// Configure tool-specific properties.
 	// "customizations": {},
