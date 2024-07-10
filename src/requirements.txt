@@ -1,4 +1,8 @@
+auto_mix_prep==0.2.0
 fastapi==0.111.0
 pydantic==2.8.2
 starlette==0.37.2
-uvicorn==0.30.1
+pytest
+pipreqs
+pytest-cov
+
