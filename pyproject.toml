@@ -10,9 +10,9 @@ line-length = 120
 ## 略称一覧: https://pypi.org/project/ruff/0.0.242/#supported-rule
 
 ## select: 指定したルールをチェックの対象とする
-select = ["ALL"]
+lint.select = ["ALL"]
 ## ignore: 指定したルールをチェックの対象としない
-ignore = [
+lint.ignore = [
     "D", # Docstringを中途半端にしか書いていないので、除外する
 ]
 
@@ -23,7 +23,7 @@ exclude = [
     "database/versions"
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 # ファイル毎に無効とする設定
 
 # https://docs.astral.sh/ruff/settings/#lint_per-file-ignores
@@ -32,8 +32,6 @@ exclude = [
     "ANN102", # clsの型を省略するため
     "COM812", # 末尾のカンマを必須としない
     "ERA001", # コメントアウト文を許可
-    "FBT001", # 関数の引数にbooleanを許可(TODO:見直し)
-    "FBT002", # 関数の引数にbooleanを許可(TODO:見直し)
     "PT009", # assertEqualなどを使うため
     "PTH207", # glob.globを許可
     "S311", # randomを許可
@@ -46,7 +44,7 @@ exclude = [
 extend-exclude = []
 
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 # pydocstyleを無視しているのでこの設定は無意味だが、
 # いずれdocstringのスタイルを統一するので設定だけしておく
 convention = "google"
