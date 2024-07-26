@@ -22,8 +22,8 @@ services:
 
   api:
     build:
-      context: ./docker/api
-      dockerfile: Dockerfile.prod
+      context: .
+      dockerfile: ./docker/api/dockerfile
     restart: always
     ports:
       - 5000:5000
