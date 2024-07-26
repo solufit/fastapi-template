@@ -19,7 +19,7 @@ ignore = [
 # Assume Python 3.12
 target-version = "py312"
 
-[tool.ruff.lint.per-file-ignores]
+[tool.ruff.per-file-ignores]
 # ファイル毎に無効とする設定
 
 # https://docs.astral.sh/ruff/settings/#lint_per-file-ignores
@@ -41,7 +41,7 @@ target-version = "py312"
 ]
 extend-exclude = ["database/versions"]
 
-[tool.ruff.lint.pydocstyle]
+[tool.ruff.pydocstyle]
 # pydocstyleを無視しているのでこの設定は無意味だが、
 # いずれdocstringのスタイルを統一するので設定だけしておく
 convention = "google"
