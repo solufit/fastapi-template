@@ -12,9 +12,7 @@ line-length = 120
 ## select: 指定したルールをチェックの対象とする
 lint.select = ["ALL"]
 ## ignore: 指定したルールをチェックの対象としない
-lint.ignore = [
-    "D", # Docstringを中途半端にしか書いていないので、除外する
-]
+lint.ignore = []
 
 # Assume Python 3.12
 target-version = "py312"
