@@ -19,6 +19,10 @@ lint.ignore = [
 # Assume Python 3.12
 target-version = "py312"
 
+exclude = [
+    "database/versions"
+]
+
 [tool.ruff.lint.per-file-ignores]
 # ファイル毎に無効とする設定
 
@@ -28,8 +32,6 @@ target-version = "py312"
     "ANN102", # clsの型を省略するため
     "COM812", # 末尾のカンマを必須としない
     "ERA001", # コメントアウト文を許可
-    "FBT001", # 関数の引数にbooleanを許可(TODO:見直し)
-    "FBT002", # 関数の引数にbooleanを許可(TODO:見直し)
     "PT009", # assertEqualなどを使うため
     "PTH207", # glob.globを許可
     "S311", # randomを許可
@@ -39,7 +41,8 @@ target-version = "py312"
     "PLR2004", #assetの許可
     "S101"
 ]
-extend-exclude = ["database/versions"]
+extend-exclude = []
+
 
 [tool.ruff.lint.pydocstyle]
 # pydocstyleを無視しているのでこの設定は無意味だが、
