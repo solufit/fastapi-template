@@ -1,4 +1,4 @@
-import os  # noqa: INP001
+import os
 from typing import Any
 
 from sqlalchemy import Column, Integer, String, create_engine
