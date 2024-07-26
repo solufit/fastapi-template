@@ -10,9 +10,9 @@ line-length = 120
 ## 略称一覧: https://pypi.org/project/ruff/0.0.242/#supported-rule
 
 ## select: 指定したルールをチェックの対象とする
-lint.select = ["ALL"]
+select = ["ALL"]
 ## ignore: 指定したルールをチェックの対象としない
-lint.ignore = [
+ignore = [
     "D", # Docstringを中途半端にしか書いていないので、除外する
 ]
 
