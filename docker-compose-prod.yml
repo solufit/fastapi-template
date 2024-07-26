@@ -2,19 +2,21 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:12.19-bookworm
+    image: mariadb:latest
     restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/mysql
     ports:
-      - 5432:5432
+      - 3306:3306
 
     networks:
       - solufit
+
     env_file:
       - .env
 
