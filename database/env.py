@@ -1,5 +1,5 @@
-import os  # noqa: INP001
-from logging.config import fileConfig  # noqa: INP001
+import os
+from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
