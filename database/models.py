@@ -30,9 +30,9 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
-    fullname = Column(String)
-    nickname = Column(String)
+    name = Column(String(255))
+    fullname = Column(String(255))
+    nickname = Column(String(255))
 
     def __repr__(self) -> str:
         return f"<User('name={self.name}', fullname={self.fullname}, nickname={self.nickname})>"
