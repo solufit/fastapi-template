@@ -25,4 +25,4 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY . .
 
 # Set the command to run your Python application
-CMD ["bash", "-c", "start.sh"]
+CMD ["sh", "/app/start.sh"]

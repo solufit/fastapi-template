@@ -14,7 +14,13 @@ echo This software is released under the MIT License.
 echo http://opensource.org/licenses/mit-license.php
 echo 
 echo ------------------------------------------------
-echo Step1: Update Database Model
+echo Step1: Wait for 10 seconds for the database to start
+echo
+sleep 10
+
+
+echo ------------------------------------------------
+echo Step2: Update Database Model
 echo
 
 alembic upgrade head
@@ -27,7 +33,7 @@ fi
 
 echo
 echo ------------------------------------------------
-echo Step2: Start FastAPI Server
+echo Step3: Start FastAPI Server
 echo
 
 uvicorn src:app --reload --host 0.0.0.0 --port 5000
