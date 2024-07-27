@@ -7,7 +7,7 @@ from src.scheme.version import VersionResponse
 
 router = APIRouter()
 
-logger = getLogger("uvicorn").getChild(__name__)
+logger = getLogger("uvicorn.api.v1").getChild(__name__)
 
 
 @router.get("/")

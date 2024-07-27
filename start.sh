@@ -7,6 +7,15 @@ echo "####################"
 echo "# Starting FastAPI #"
 echo "####################"
 echo 
+
+if [ $DEBUG = "True" ]; then
+    LOG="log_config_debug.yaml"
+    echo DEBUG Mode Enabled
+    echo
+else
+    LOG="log_config.yaml";
+fi
+
 echo Generate from https://github.com/solufit/fastapi-template
 echo Version: $version
 echo Copyright 2024 Solufit All Right Reserved
@@ -36,4 +45,5 @@ echo ------------------------------------------------
 echo Step3: Start FastAPI Server
 echo
 
-uvicorn src:app --reload --host 0.0.0.0 --port 5000
+
+uvicorn src:app --reload --host 0.0.0.0 --port 5000 --log-config $LOG
