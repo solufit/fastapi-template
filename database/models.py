@@ -7,7 +7,11 @@ from sqlalchemy.ext.declarative import declarative_base
 # ---------------------------------------------------------------
 # SQLの初期設定
 
-path = os.environ.get("DATABASE_URL")
+USER = os.getenv("MYSQL_USER")
+PASSWORD = os.getenv("MYSQL_PASSWORD")
+DATABASE = os.getenv("MYSQL_DATABASE")
+
+path = f"mysql://{USER}:{PASSWORD}@db/{DATABASE}"
 # path = 'mysql+pymysql://root:@127.0.0.1:3306/alembic_sample'
 
 if path is not None:

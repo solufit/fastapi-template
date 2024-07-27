@@ -14,7 +14,11 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # Assuming you have an environment variable DATABASE_URL set
-database_url = os.getenv("DATABASE_URL")
+USER = os.getenv("MYSQL_USER")
+PASSWORD = os.getenv("MYSQL_PASSWORD")
+DATABASE = os.getenv("MYSQL_DATABASE")
+
+database_url = f"mysql://{USER}:{PASSWORD}@db/{DATABASE}"
 
 if database_url is not None:
     # Manually set the sqlalchemy.url configuration to the database URL from the environment
