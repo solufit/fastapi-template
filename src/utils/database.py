@@ -18,7 +18,7 @@ class Database:
         SessionLocal: The SQLAlchemy sessionmaker object for creating database sessions.
     """
 
-    def __init__(self, sqlite_path: str = None) -> None:
+    def __init__(self, sqlite_path: str | None = None) -> None:
         self.host = "db"
         self.sqlite_path = sqlite_path
         try:
@@ -29,9 +29,6 @@ class Database:
             msg = f"Error reading environment variables: {e}"
             raise KeyError(msg) from None
 
-        self.engine = None
-        self.SessionLocal = None
-
     def connect(self) -> None:
         """
         Connect to the database.
@@ -39,9 +36,9 @@ class Database:
             - engine: The SQLAlchemy engine object for the database connection.
             - SessionLocal: The SQLAlchemy sessionmaker object for creating database sessions.
         """
-        
+
         try:
-            if self.sqlite_path == None:
+            if self.sqlite_path is None:
                 connection_string = f"mysql://{self.user}:{self.password}@{self.host}/{self.database}"
             else:
                 connection_string = f"sqlite:///{self.sqlite_path}"
