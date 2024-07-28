@@ -53,11 +53,11 @@ fastapi-template
 |-- LICENSE
 |-- README.md
 |-- alembic.ini
-|-- database
+|-- database # Contains database-related files and migration scripts.
 |   |-- README
 |   |-- __init__.py
 |   |-- env.py
-|   |-- models.py
+|   |-- models.py # Defines SQLAlchemy ORM models.
 |   |-- script.py.mako
 |   `-- versions
 |       |-- cbc697a95795_init_database.py
@@ -67,29 +67,29 @@ fastapi-template
 |       `-- dockerfile
 |-- docker-compose-prod.yml
 |-- docker-compose.yml
-|-- example.env
-|-- log_config.yaml
-|-- log_config_debug.yaml
+|-- example.env # Example environment variable file. Copy to .env and modify as needed
+|-- log_config.yaml # Logging configuration files. 
+|-- log_config_debug.yaml # Logging configuration files. Used for debugging.
 |-- pyproject.toml
 |-- requirements-test.txt
 |-- requirements.txt -> ./src/requirements.txt
 |-- src
 |   |-- __init__.py
-|   |-- app.py
-|   |-- endpoints
+|   |-- app.py # Main FastAPI application file.
+|   |-- endpoints # API endpoints.
 |   |   |-- __init__.py
-|   |   `-- v1
+|   |   `-- v1 # Version 1 of the API endpoints.
 |   |       |-- __init__.py
 |   |       `-- version.py
 |   |-- requirements.txt
-|   |-- scheme
+|   |-- scheme # Pydantic schemas for request/response models.
 |   |   |-- __init__.py
 |   |   `-- version.py
 |   `-- utils
 |       |-- __init__.py
-|       `-- database.py
+|       `-- database.py # Contains Database connection and session management Class.
 |-- start.sh
-|-- tests
+|-- tests # Contains test files.
 |   |-- __init__.py
 |   |-- test_database.py
 |   `-- test_version.py
