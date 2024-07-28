@@ -1,5 +1,8 @@
 # FastAPI-Template
 
+[![Lint Check](https://github.com/solufit/fastapi-template/actions/workflows/lint-python.yml/badge.svg)](https://github.com/solufit/fastapi-template/actions/workflows/lint-python.yml)
+[![Python application test](https://github.com/solufit/fastapi-template/actions/workflows/test-python.yml/badge.svg)](https://github.com/solufit/fastapi-template/actions/workflows/test-python.yml)
+
 ## Overview
 
 This FastAPI-Template is a public GitHub template designed to help developers quickly set up and develop APIs. It provides a solid foundation with various features and integrations to streamline the development process.
