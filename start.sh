@@ -1,7 +1,7 @@
 #!/bin/bash
 # Start the application
 
-version="2024-07-27v1"
+version="2024-07-29-v1"
 
 echo "####################"
 echo "# Starting FastAPI #"
