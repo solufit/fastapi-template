@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 from src.app import app
 from database.models import User
 from src.utils.database import Database
-from src.scheme.user import UserCreate
 
 client = TestClient(app)
 
@@ -15,7 +14,7 @@ session = db.SessionLocal()
 
 
 @pytest.fixture(scope="module")
-def test_db():
+def test_db() -> Session:
     db = Database(sqlite_path=":memory:")
     db.connect()
     yield db.SessionLocal()
