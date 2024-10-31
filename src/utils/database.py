@@ -29,6 +29,14 @@ class Database:
             msg = f"Error reading environment variables: {e}"
             raise KeyError(msg) from None
 
+        # Read PYTEST and PYTEST_DB environment variables
+        pytest_env = os.getenv("PYTEST", "false").lower()
+        pytest_db = os.getenv("PYTEST_DB")
+
+        # Set sqlite_path to PYTEST_DB if PYTEST is true
+        if pytest_env == "true" and pytest_db:
+            self.sqlite_path = pytest_db
+
     def connect(self) -> None:
         """
         Connect to the database.
