@@ -10,7 +10,9 @@ updates:
    directory: "/"
    schedule:
      interval: weekly
+   target-branch: "develop"
  - package-ecosystem: "pip"
    directory: "/" # Python プロジェクトのルートディレクトリを指定します。必要に応じて変更してください。
    schedule:
      interval: "weekly" # 依存関係の更新をチェックする頻度。"daily", "weekly", "monthly" から選択できます。
+   target-branch: "develop"
