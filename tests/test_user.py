@@ -1,9 +1,11 @@
+from collections.abc import Generator
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from src.app import app
 from database.models import User
+from src.app import app
 from src.utils.database import Database
 
 client = TestClient(app)
@@ -14,14 +16,14 @@ session = db.SessionLocal()
 
 
 @pytest.fixture(scope="module")
-def test_db() -> Session:
+def test_db() -> Generator[Session, None, None]:
     db = Database(sqlite_path=":memory:")
     db.connect()
     yield db.SessionLocal()
     db.engine.dispose()
 
 
-def test_create_user(test_db: Session) -> None:
+def test_create_user() -> None:
     user_data = {"name": "John", "fullname": "John Doe", "nickname": "johnny"}
     response = client.post("/v1/users", json=user_data)
     assert response.status_code == 200
