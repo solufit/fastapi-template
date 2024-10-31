@@ -7,12 +7,8 @@ class UserCreate(BaseModel):
     nickname: str
 
 
-class UserRetrieve(BaseModel):
+class UserResponse(BaseModel):
     id: int
     name: str
     fullname: str
     nickname: str
-
-
-class UserDelete(BaseModel):
-    id: int

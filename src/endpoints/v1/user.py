@@ -1,48 +1,41 @@
-from fastapi import APIRouter, HTTPException, Depends
-from sqlalchemy.orm import Session
 from typing import List
 
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
+
 from database.models import User
-from src.scheme.user import UserCreate, UserRetrieve, UserDelete
+from src.scheme.user import UserCreate, UserResponse
 from src.utils.database import Database
 
 router = APIRouter()
 
 db = Database()
 db.connect()
-SessionLocal = db.SessionLocal
+session = db.SessionLocal()
 
 
-def get_db() -> Session:
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-@router.post("/user", response_model=UserRetrieve)
-def create_user(user: UserCreate, db: Session = Depends(get_db)) -> UserRetrieve:
+@router.post("/users", response_model=UserResponse)
+def create_user(user: UserCreate, db: Session = Depends(session)) -> UserResponse:
     db_user = User(name=user.name, fullname=user.fullname, nickname=user.nickname)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
-    return db_user
+    return UserResponse(id=db_user.id, name=db_user.name, fullname=db_user.fullname, nickname=db_user.nickname)
 
 
-@router.get("/user/{user_id}", response_model=UserRetrieve)
-def get_user(user_id: int, db: Session = Depends(get_db)) -> UserRetrieve:
+@router.get("/users/{user_id}", response_model=UserResponse)
+def get_user(user_id: int, db: Session = Depends(session)) -> UserResponse:
     db_user = db.query(User).filter(User.id == user_id).first()
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    return db_user
+    return UserResponse(id=db_user.id, name=db_user.name, fullname=db_user.fullname, nickname=db_user.nickname)
 
 
-@router.delete("/user/{user_id}", response_model=UserDelete)
-def delete_user(user_id: int, db: Session = Depends(get_db)) -> UserDelete:
+@router.delete("/users/{user_id}", response_model=UserResponse)
+def delete_user(user_id: int, db: Session = Depends(session)) -> UserResponse:
     db_user = db.query(User).filter(User.id == user_id).first()
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     db.delete(db_user)
     db.commit()
-    return {"id": user_id}
+    return UserResponse(id=db_user.id, name=db_user.name, fullname=db_user.fullname, nickname=db_user.nickname)
