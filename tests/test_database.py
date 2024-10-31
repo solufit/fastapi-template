@@ -41,3 +41,35 @@ def test_database_init_connection_error() -> None:
             db.connect()
 
         assert "Error connecting to the database" in str(excinfo.value)
+
+
+def test_database_init_pytest_true() -> None:
+    """Test initialization of the Database class when PYTEST=true."""
+    with patch.dict(
+        os.environ,
+        {
+            "MYSQL_DATABASE": "test_db",
+            "MYSQL_USER": "test_user",
+            "MYSQL_PASSWORD": "test_password",
+            "PYTEST": "true",
+            "PYTEST_DB": "sqlite:///:memory:",
+        },
+    ):
+        db = Database()
+        assert db.sqlite_path == "sqlite:///:memory:"
+
+
+def test_database_init_pytest_false() -> None:
+    """Test initialization of the Database class when PYTEST=false."""
+    with patch.dict(
+        os.environ,
+        {
+            "MYSQL_DATABASE": "test_db",
+            "MYSQL_USER": "test_user",
+            "MYSQL_PASSWORD": "test_password",
+            "PYTEST": "false",
+            "PYTEST_DB": "sqlite:///:memory:",
+        },
+    ):
+        db = Database()
+        assert db.sqlite_path is None
