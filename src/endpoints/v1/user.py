@@ -10,15 +10,31 @@ from src.utils.database import Database
 router = APIRouter()
 
 
-@router.post("/users", response_model=UserResponse)
+@router.post("/users")
 def create_user(user: UserCreate) -> UserResponse:
     db = Database()
     db.connect()
     db_user = User(name=user.name, fullname=user.fullname, nickname=user.nickname)
     db_session = db.SessionLocal()
     db_session.add(db_user)
+
+    # get id from db
+    db_session.commit()
+    db_session.refresh(db_user)
+
+    db_user_id = (
+        db_session.query(User)
+        .filter(User.name == user.name)
+        .filter(User.fullname == user.fullname)
+        .filter(User.nickname == user.nickname)
+        .first()
+        .id
+    )
+    if db_user_id is None:
+        raise HTTPException(status_code=500, detail="An error occurred while creating the user")
+
     return UserResponse(
-        id=int(db_user.id), name=str(db_user.name), fullname=str(db_user.fullname), nickname=str(db_user.nickname)
+        id=int(db_user_id), name=str(db_user.name), fullname=str(db_user.fullname), nickname=str(db_user.nickname)
     )
 
 

@@ -21,19 +21,21 @@ session = db.SessionLocal()
 
 @pytest.fixture
 def test_db() -> Generator[str, None, None]:
-    path = f"{tempfile.gettempdir()}/{random.randint(1,1000)}test.db"
+    path = f"sqlite:///{tempfile.gettempdir()}/{random.randint(1,1000)}test.db"
     yield path
     Path(path).unlink()
 
 
-def test_create_user() -> None:
-    user_data = {"name": "John", "fullname": "John Doe", "nickname": "johnny"}
-    response = client.post("/v1/users", json=user_data)
-    assert response.status_code == 200
-    data = response.json()
-    assert data["name"] == user_data["name"]
-    assert data["fullname"] == user_data["fullname"]
-    assert data["nickname"] == user_data["nickname"]
+def test_create_user(test_db: str) -> None:
+    path = test_db
+    with patch.dict("os.environ", {"PYTEST": "true", "PYTEST_DB": path}):
+        user_data = {"name": "John", "fullname": "John Doe", "nickname": "johnny"}
+        response = client.post("/v1/users", json=user_data)
+        assert response.status_code == 200
+        data = response.json()
+        assert data["name"] == user_data["name"]
+        assert data["fullname"] == user_data["fullname"]
+        assert data["nickname"] == user_data["nickname"]
 
 
 def test_get_user(test_db: str) -> None:
