@@ -6,7 +6,6 @@ from unittest.mock import patch
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
 
 from database.models import User
 from src.app import app

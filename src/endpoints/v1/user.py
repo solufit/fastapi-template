@@ -1,7 +1,4 @@
-from collections.abc import Generator
-
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, HTTPException
 
 from database.models import User
 from src.scheme.user import UserCreate, UserResponse
