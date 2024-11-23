@@ -35,7 +35,7 @@ def test_database_init_connection_error() -> None:
         ),
         patch("src.utils.database.create_engine", side_effect=SQLAlchemyError("Connection error")),
     ):
-        db = Database(sqlite_path=":memory")
+        db = Database(sqlite_path=":memory:")
 
         with pytest.raises(SQLAlchemyError) as excinfo:
             db.connect()
