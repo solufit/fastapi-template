@@ -4,6 +4,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 
+from database.models import Base
+
 
 class Database:
     """
@@ -21,13 +23,23 @@ class Database:
     def __init__(self, sqlite_path: str | None = None) -> None:
         self.host = "db"
         self.sqlite_path = sqlite_path
+
+        try:
+            if os.environ["PYTEST"] == "true":
+                self.sqlite_path = os.environ["PYTEST_DB"]
+        except KeyError:
+            pass
+
         try:
             self.database = os.environ["MYSQL_DATABASE"]
             self.user = os.environ["MYSQL_USER"]
             self.password = os.environ["MYSQL_PASSWORD"]
         except KeyError as e:
-            msg = f"Error reading environment variables: {e}"
-            raise KeyError(msg) from None
+            try:
+                _ = os.environ["PYTEST"] != "true"
+            except KeyError:
+                msg = f"Error reading environment variables: {e}"
+                raise KeyError(msg) from None
 
     def connect(self) -> None:
         """
@@ -41,9 +53,17 @@ class Database:
             if self.sqlite_path is None:
                 connection_string = f"mysql://{self.user}:{self.password}@{self.host}/{self.database}"
             else:
-                connection_string = f"sqlite:///{self.sqlite_path}"
+                connection_string = os.getenv("PYTEST_DB", "")
             self.engine = create_engine(connection_string)
             self.SessionLocal = sessionmaker(bind=self.engine)
+            self.SessionLocal.configure(expire_on_commit=False)
+
+            try:
+                if os.environ["PYTEST"] == "true":
+                    Base.metadata.create_all(self.engine)
+
+            except KeyError:
+                pass
 
         except SQLAlchemyError as e:
             msg = f"Error connecting to the database: {e}"
