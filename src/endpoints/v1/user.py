@@ -50,7 +50,7 @@ def get_user(user_id: int) -> UserResponse:
     )
 
 
-@router.delete("/users/{user_id}", response_model=UserResponse)
+@router.delete("/users/{user_id}")
 def delete_user(user_id: int) -> UserResponse:
     db = Database()
     db.connect()
