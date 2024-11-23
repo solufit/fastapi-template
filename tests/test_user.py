@@ -13,10 +13,6 @@ from src.utils.database import Database
 
 client = TestClient(app)
 
-db = Database()
-db.connect()
-session = db.SessionLocal()
-
 
 @pytest.fixture
 def test_db() -> Generator[str, None, None]:
