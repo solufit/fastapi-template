@@ -37,7 +37,7 @@ def create_user(user: UserCreate) -> UserResponse:
     )
 
 
-@router.get("/users/{user_id}", response_model=UserResponse)
+@router.get("/users/{user_id}")
 def get_user(user_id: int) -> UserResponse:
     db = Database()
     db.connect()
