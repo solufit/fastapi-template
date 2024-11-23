@@ -1,5 +1,4 @@
 import os
-from typing import Optional  # Add this import
 from unittest.mock import patch
 
 import pytest
