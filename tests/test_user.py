@@ -23,7 +23,8 @@ session = db.SessionLocal()
 def test_db() -> Generator[str, None, None]:
     path = f"sqlite:///{tempfile.gettempdir()}/{random.randint(1,1000)}test.db"
     yield path
-    Path(path).unlink()
+    # path[0:10] is "sqlite:///", so we start from path[10:]
+    Path(path[10:]).unlink()
 
 
 def test_create_user(test_db: str) -> None:
