@@ -131,6 +131,8 @@ class Database:
             msg = f"Error connecting to the database: {e}"
             raise SQLAlchemyError(msg) from None
 
+        self.connection = True
+
         return self
 
     @contextmanager
