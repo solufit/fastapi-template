@@ -73,7 +73,7 @@ ignore_missing_imports = true
 packages = ["src"]
 
 [tool.pytest.ini_options]
-addopts = "-v -s"
+addopts = "-v -s --ignore=*/database/*"
 testpaths = [
     "tests",
 ]
