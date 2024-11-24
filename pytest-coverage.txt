@@ -1,0 +1,35 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.7, pytest-8.3.3, pluggy-1.5.0
+rootdir: /home/runner/work/fastapi-template/fastapi-template
+configfile: pytest.ini
+plugins: anyio-4.6.2.post1, cov-5.0.0, mock-3.14.0
+collected 9 items
+
+tests/test_database.py .....                                             [ 55%]
+tests/test_user.py ...                                                   [ 88%]
+tests/test_version.py .                                                  [100%]
+
+=============================== warnings summary ===============================
+../../../../../opt/hostedtoolcache/Python/3.12.7/x64/lib/python3.12/site-packages/_pytest/config/__init__.py:1441
+  /opt/hostedtoolcache/Python/3.12.7/x64/lib/python3.12/site-packages/_pytest/config/__init__.py:1441: PytestConfigWarning: Unknown config option: env
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+database/models.py:24
+  /home/runner/work/fastapi-template/fastapi-template/database/models.py:24: MovedIn20Warning: The ``declarative_base()`` function is now available as sqlalchemy.orm.declarative_base(). (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    Base: Any = declarative_base()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /home/runner/work/fastapi-template/fastapi-template/pytest.xml -
+
+---------- coverage: platform linux, python 3.12.7-final-0 -----------
+Name                       Stmts   Miss Branch BrPart  Cover   Missing
+----------------------------------------------------------------------
+src/endpoints/v1/user.py      38      2      6      2    91%   30, 57
+src/utils/database.py         52      3     10      3    90%   62, 70->exit, 73-74, 85->exit
+----------------------------------------------------------------------
+TOTAL                        131      5     16      5    93%
+
+9 files skipped due to complete coverage.
+
+======================== 9 passed, 2 warnings in 2.20s =========================
