@@ -41,10 +41,8 @@ def test_get_user(test_db: str) -> None:
         db_user = User(name=user_data["name"], fullname=user_data["fullname"], nickname=user_data["nickname"])
         db = Database()
         db.connect()
-        session = db.SessionLocal()
-        session.add(db_user)
-        session.commit()
-        session.refresh(db_user)
+        with db.session() as session:
+            session.add(db_user)
 
         response = client.get(f"/v1/users/{db_user.id}")
         assert response.status_code == 200
@@ -63,11 +61,9 @@ def test_delete_user(test_db: str) -> None:
 
         db = Database()
         db.connect()
-        session = db.SessionLocal()
 
-        session.add(db_user)
-        session.commit()
-        session.refresh(db_user)
+        with db.session() as session:
+            session.add(db_user)
 
         response = client.delete(f"/v1/users/{db_user.id}")
         assert response.status_code == 200

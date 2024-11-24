@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import os
-from contextlib import contextmanager
+from contextlib import contextmanager, suppress
 from typing import TYPE_CHECKING
 
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm.exc import DetachedInstanceError
 
 from database.models import Base
 
@@ -153,7 +154,7 @@ class Database:
             msg = "Database connection is not established"
             raise ValueError(msg)
 
-        session_local = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
+        session_local = sessionmaker(autocommit=False, autoflush=False, bind=self.engine, expire_on_commit=False)
         session = session_local()
 
         try:
@@ -164,7 +165,8 @@ class Database:
             msg = f"Error in session: {e}"
             raise SQLAlchemyError(msg) from None
         finally:
-            session.close()
+            with suppress(DetachedInstanceError):
+                session.close()
 
     def __del__(self) -> None:
         self.close()
