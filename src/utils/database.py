@@ -20,34 +20,55 @@ class Database:
         SessionLocal: The SQLAlchemy sessionmaker object for creating database sessions.
     """
 
-    def __init__(self, sqlite_path: str | None = None) -> None:
-        self.host = "db"
-        self.sqlite_path = sqlite_path
+    db_path = ""
 
-        try:
-            if os.environ["PYTEST"] == "true":
-                self.sqlite_path = os.environ["PYTEST_DB"]
-        except KeyError:
-            pass
+    def __init__(
+        self,
+        sqlite_path: str | None = None,
+        host: str | None = None,
+        db_name: str | None = None,
+        db_user: str | None = None,
+        db_pass: str | None = None,
+    ) -> None:
+        pytest_enabled = os.getenv("PYTEST", "false").lower() == "true"
+        pytest_path = os.getenv("PYTEST_DB", "")
 
-        try:
-            self.database = os.environ["MYSQL_DATABASE"]
-            self.user = os.environ["MYSQL_USER"]
-            self.password = os.environ["MYSQL_PASSWORD"]
-        except KeyError as e:
-            try:
-                _ = os.environ["PYTEST"] != "true"
-            except KeyError:
-                msg = f"Error reading environment variables: {e}"
-                raise KeyError(msg) from None
+        # if pytest is enabled, set the db path to the pytest_path
+        # if not provied pytest_path, set it to in-memory sqlite
+        if pytest_enabled:
+            if not pytest_path:
+                pytest_path = "sqlite:///:memory:"
+            self.db_path = pytest_path
 
-        # Read PYTEST and PYTEST_DB environment variables
-        pytest_env = os.getenv("PYTEST", "false").lower()
-        pytest_db = os.getenv("PYTEST_DB")
+        # you can't provide both sqlite_path and host, db_name, db_user, db_pass
+        elif sqlite_path and (host or db_name or db_user or db_pass):
+            msg = "You can't provide both sqlite_path and host, db_name, db_user, db_pass"
+            raise ValueError(msg)
 
-        # Set sqlite_path to PYTEST_DB if PYTEST is true
-        if pytest_env == "true" and pytest_db:
-            self.sqlite_path = pytest_db
+        # if sqlite_path provided, set the db_path to sqlite_path
+        elif sqlite_path:
+            self.db_path = sqlite_path
+
+        # if host, db_name, db_user, db_pass provided, set the db_path to mysql
+        elif host or db_name or db_user or db_pass:
+            # check all the required fields are provided
+            if not all([host, db_name, db_user, db_pass]):
+                msg = "You must provide host, db_name, db_user, db_pass"
+                raise ValueError(msg)
+
+            self.db_path = f"mysql://{db_user}:{db_pass}@{host}/{db_name}"
+
+        # if nothing provided, read value from env
+        else:
+            db_name = os.getenv("MYSQL_DATABASE", "")
+            db_pass = os.getenv("MYSQL_PASSWORD", "")
+            db_user = os.getenv("MYSQL_USER", "")
+
+            if db_name and db_pass and db_user:
+                self.db_path = f"mysql://{db_user}:{db_pass}@db/{db_name}"
+            else:
+                msg = "You must provide env variables MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER"
+                raise ValueError(msg)
 
     def connect(self) -> None:
         """
