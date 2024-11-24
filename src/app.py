@@ -1,15 +1,14 @@
-from fastapi import FastAPI
-from starlette.middleware.cors import CORSMiddleware
-
-from src.app_detail import APIDetail
-
-"""
-This module initializes and configures the FastAPI application.
+"""This module initializes and configures the FastAPI application.
 
 If you want to change the title, description, version, or URLs of the API documentation, you can do so by modifying
 the values in the APIDetail class in the app_detail.py module.
 
 """
+
+from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
+
+from src.app_detail import APIDetail
 
 app = FastAPI(
     title=APIDetail.API_TITLE,

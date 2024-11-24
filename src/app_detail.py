@@ -1,6 +1,8 @@
+"""This module contains the APIDetail class which provides metadata and configuration for the API."""
+
+
 class APIDetail:
-    """
-    APIDetail class contains metadata and configuration for the FastAPI Template API.
+    """APIDetail class contains metadata and configuration for the FastAPI Template API.
 
     Attributes:
         API_TITLE (str): The title of the API.
