@@ -4,7 +4,7 @@ import os
 from contextlib import contextmanager, suppress
 from typing import TYPE_CHECKING
 
-from sqlalchemy import create_engine
+from sqlalchemy import Engine, create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.orm.exc import DetachedInstanceError
@@ -41,6 +41,7 @@ class Database:
 
     db_path = ""
     connection = False
+    endgine: Engine | None = None
 
     def __init__(
         self,
@@ -73,7 +74,7 @@ class Database:
         pytest_path = os.getenv("PYTEST_DB", "")
 
         # if pytest is enabled, set the db path to the pytest_path
-        # if not provied pytest_path, set it to in-memory sqlite
+        # if not provided pytest_path, set it to in-memory sqlite
         if self.pytest_enabled:
             if not pytest_path:
                 pytest_path = "sqlite:///:memory:"
@@ -112,7 +113,7 @@ class Database:
     def connect(self) -> Database:
         """
         Connect to the database.
-        This function generate
+        This function generates
             - engine: The SQLAlchemy engine object for the database connection.
 
         return: Database object
@@ -184,4 +185,5 @@ class Database:
         except AttributeError:
             pass
         finally:
+            self.endgine = None
             self.connection = False
