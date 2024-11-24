@@ -1,3 +1,5 @@
+"""This module contains the user-info-related endpoints for the FastAPI application."""
+
 from fastapi import APIRouter, HTTPException
 
 from database.models import User
@@ -9,6 +11,14 @@ router = APIRouter()
 
 @router.post("/users")
 def create_user(user: UserCreate) -> UserResponse:
+    """Create a new user in the database.
+
+    Args:
+        user (UserCreate): The user information to create.
+
+    Returns:
+        UserResponse: The created user information.
+    """
     db = Database()
     db.connect()
     db_user = User(name=user.name, fullname=user.fullname, nickname=user.nickname)
@@ -35,6 +45,14 @@ def create_user(user: UserCreate) -> UserResponse:
 
 @router.get("/users/{user_id}")
 def get_user(user_id: int) -> UserResponse:
+    """Retrieve a user from the database by user ID.
+
+    Args:
+        user_id (int): The ID of the user to retrieve.
+
+    Returns:
+        UserResponse: The retrieved user information.
+    """
     db = Database()
     db.connect()
 
@@ -49,6 +67,14 @@ def get_user(user_id: int) -> UserResponse:
 
 @router.delete("/users/{user_id}")
 def delete_user(user_id: int) -> UserResponse:
+    """Delete a user from the database by user ID.
+
+    Args:
+        user_id (int): The ID of the user to delete.
+
+    Returns:
+        UserResponse: The deleted user information.
+    """
     db = Database()
     db.connect()
 
