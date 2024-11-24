@@ -179,7 +179,6 @@ class Database:
         try:
             if self.engine:
                 self.engine.dispose()
-                self.engine = None
         except AttributeError:
             pass
         finally:

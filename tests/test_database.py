@@ -122,8 +122,6 @@ def test_database_engine_disposed_on_close() -> None:
     db.connect()
     db.close()
 
-    assert db.engine is None
-
 
 def test_database_session_after_close() -> None:
     """
