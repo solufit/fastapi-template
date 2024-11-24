@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import os
-from collections.abc import Generator
 from contextlib import contextmanager
+from typing import TYPE_CHECKING
 
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
@@ -10,18 +10,32 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from database.models import Base
 
+if TYPE_CHECKING:
+    from collections.abc import Generator
+
 
 class Database:
     """
-    A class representing a database connection.
+    The `Database` class provides an interface for connecting to and interacting with a database.
+
+    It supports both SQLite and MySQL databases, allowing for flexible configuration through
+    direct parameters or environment variables. The class also supports a testing mode using pytest,
+    enabling the use of an in-memory SQLite database.
 
     Attributes:
-        host (str): The hostname of the database server.
-        database (str): The name of the database.
-        user (str): The username for the database connection.
-        password (str): The password for the database connection.
-        engine: The SQLAlchemy engine object for the database connection.
-        SessionLocal: The SQLAlchemy sessionmaker object for creating database sessions.
+        db_path (str): The database connection string.
+        connection (bool): Indicates whether a connection to the database has been established.
+        pytest_enabled (bool): Indicates whether pytest is enabled. If env PYTEST is set to true, this will be True.
+
+    Methods:
+        connect() -> Database:
+            Establishes a connection to the database.
+
+        session() -> Generator[Session, None, None]:
+            Provides a context manager for database sessions.
+
+        close() -> None:
+            Closes the database connection.
     """
 
     db_path = ""
@@ -35,6 +49,25 @@ class Database:
         db_user: str | None = None,
         db_pass: str | None = None,
     ) -> None:
+        """
+        Initialize the Database class.
+
+        If env PYTEST is set to true, it will use the env PYTEST_DB as the database path
+        and, sqlite_path, host, db_name, db_user, db_pass will be ignored.
+
+        And,if sqlite_path, host, db_name, db_user, db_pass is not provided,
+        it will read the values from the environment variables
+        - MYSQL_DATABASE
+        - MYSQL_PASSWORD
+        - MYSQL_USER.
+
+        Args:
+            sqlite_path (str | None): The path to the SQLite database.
+            host (str | None): The hostname of the database server.
+            db_name (str | None): The name of the database.
+            db_user (str | None): The username for the database connection.
+            db_pass (str | None): The password for the database connection.
+        """
         self.pytest_enabled = os.getenv("PYTEST", "false").lower() == "true"
         pytest_path = os.getenv("PYTEST_DB", "")
 
@@ -135,6 +168,12 @@ class Database:
         self.close()
 
     def close(self) -> None:
+        """
+        Close the database connection.
+
+        This method disposes of the SQLAlchemy engine, effectively closing the connection to the database.
+        It also sets the `connection` attribute to `False` to indicate that the connection is no longer active.
+        """
         try:
             if self.engine:
                 self.engine.dispose()
