@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 
 from sqlalchemy import create_engine
@@ -21,6 +23,7 @@ class Database:
     """
 
     db_path = ""
+    connection = False
 
     def __init__(
         self,
@@ -30,12 +33,12 @@ class Database:
         db_user: str | None = None,
         db_pass: str | None = None,
     ) -> None:
-        pytest_enabled = os.getenv("PYTEST", "false").lower() == "true"
+        self.pytest_enabled = os.getenv("PYTEST", "false").lower() == "true"
         pytest_path = os.getenv("PYTEST_DB", "")
 
         # if pytest is enabled, set the db path to the pytest_path
         # if not provied pytest_path, set it to in-memory sqlite
-        if pytest_enabled:
+        if self.pytest_enabled:
             if not pytest_path:
                 pytest_path = "sqlite:///:memory:"
             self.db_path = pytest_path
@@ -70,40 +73,37 @@ class Database:
                 msg = "You must provide env variables MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER"
                 raise ValueError(msg)
 
-    def connect(self) -> None:
+    def connect(self) -> Database:
         """
         Connect to the database.
         This function generate
             - engine: The SQLAlchemy engine object for the database connection.
-            - SessionLocal: The SQLAlchemy sessionmaker object for creating database sessions.
         """
 
+        if self.connection:
+            return self
+
         try:
-            if self.sqlite_path is None:
-                connection_string = f"mysql://{self.user}:{self.password}@{self.host}/{self.database}"
-            else:
-                connection_string = os.getenv("PYTEST_DB", "")
-            self.engine = create_engine(connection_string)
-            self.SessionLocal = sessionmaker(bind=self.engine)
-            self.SessionLocal.configure(expire_on_commit=False)
+            self.engine = create_engine(self.db_path)
 
-            try:
-                if os.environ["PYTEST"] == "true":
-                    Base.metadata.create_all(self.engine)
-
-            except KeyError:
-                pass
+            # create all tables if pytest is enabled
+            if self.pytest_enabled:
+                Base.metadata.create_all(self.engine)
 
         except SQLAlchemyError as e:
             msg = f"Error connecting to the database: {e}"
             raise SQLAlchemyError(msg) from None
 
-    def __del__(self) -> None:
-        self._close()
+        return self
 
-    def _close(self) -> None:
+    def __del__(self) -> None:
+        self.close()
+
+    def close(self) -> None:
         try:
             if self.engine:
                 self.engine.dispose()
         except AttributeError:
             pass
+        finally:
+            self.connection = False
