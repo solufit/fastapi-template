@@ -12,6 +12,9 @@ logger = getLogger("uvicorn.api.v1").getChild(__name__)
 
 @router.get("/")
 async def get_version() -> VersionResponse:
+    """
+    Retrieve the current version of the application.
+    """
     version: str = app.version
     logger.info("Version Function was called.")
     return VersionResponse(version=version)
