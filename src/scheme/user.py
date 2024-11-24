@@ -1,10 +1,10 @@
+"""This module contains Pydantic models for user-related operations."""
+
 from pydantic import BaseModel
 
 
 class UserCreate(BaseModel):
-    """
-    Schema for creating a new user.
-    """
+    """Schema for creating a new user."""
 
     name: str
     fullname: str
@@ -12,9 +12,7 @@ class UserCreate(BaseModel):
 
 
 class UserResponse(BaseModel):
-    """
-    Represents the response model for a user.
-    """
+    """Represents the response model for a user."""
 
     id: int
     name: str

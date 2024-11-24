@@ -1,3 +1,5 @@
+"""This module defines the VersionResponse model."""
+
 from pydantic import BaseModel
 
 
