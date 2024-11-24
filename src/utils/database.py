@@ -1,3 +1,5 @@
+"""This module provides the Database class for managing database connections and sessions."""
+
 from __future__ import annotations
 
 import os
@@ -16,8 +18,7 @@ if TYPE_CHECKING:
 
 
 class Database:
-    """
-    The `Database` class provides an interface for connecting to and interacting with a database.
+    """The `Database` class provides an interface for connecting to and interacting with a database.
 
     It supports both SQLite and MySQL databases, allowing for flexible configuration through
     direct parameters or environment variables. The class also supports a testing mode using pytest,
@@ -51,8 +52,7 @@ class Database:
         db_user: str | None = None,
         db_pass: str | None = None,
     ) -> None:
-        """
-        Initialize the Database class.
+        """Initialize the Database class.
 
         If env PYTEST is set to true, it will use the env PYTEST_DB as the database path
         and, sqlite_path, host, db_name, db_user, db_pass will be ignored.
@@ -111,14 +111,13 @@ class Database:
                 raise ValueError(msg)
 
     def connect(self) -> Database:
-        """
-        Connect to the database.
+        """Connect to the database.
+
         This function generates
             - engine: The SQLAlchemy engine object for the database connection.
 
         return: Database object
         """
-
         if self.connection:
             return self
 
@@ -139,8 +138,8 @@ class Database:
 
     @contextmanager
     def session(self) -> Generator[Session, None, None]:
-        """
-        Create a new session for the database connection.
+        """Create a new session for the database connection.
+
         This function generate
             - session: The SQLAlchemy session object for the database connection.
 
@@ -170,11 +169,11 @@ class Database:
                 session.close()
 
     def __del__(self) -> None:
+        """Close the database connection when the object is deleted."""
         self.close()
 
     def close(self) -> None:
-        """
-        Close the database connection.
+        """Close the database connection.
 
         This method disposes of the SQLAlchemy engine, effectively closing the connection to the database.
         It also sets the `connection` attribute to `False` to indicate that the connection is no longer active.
