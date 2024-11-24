@@ -1,6 +1,6 @@
 auto_mix_prep==0.2.0
 fastapi==0.115.5
-pydantic==2.9.2
+pydantic==2.10.1
 pytest==8.3.3
 pipreqs==0.5.0
 pytest-cov==5.0.0
