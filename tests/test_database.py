@@ -121,8 +121,8 @@ def test_database_engine_disposed_on_close() -> None:
     db = Database(sqlite_path="sqlite:///:memory:")
     db.connect()
     db.close()
-    with pytest.raises(AttributeError):
-        _ = db.engine  # Accessing engine after close should fail
+
+    assert db.engine is None
 
 
 def test_database_session_after_close() -> None:
