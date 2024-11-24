@@ -1,3 +1,5 @@
+"""This module contains tests for user-related operations."""
+
 import random
 import tempfile
 from collections.abc import Generator
@@ -16,6 +18,7 @@ client = TestClient(app)
 
 @pytest.fixture
 def test_db() -> Generator[str, None, None]:
+    """Fixture for creating a temporary test database."""
     path = f"sqlite:///{tempfile.gettempdir()}/{random.randint(1,1000)}test.db"
     yield path
     # path[0:10] is "sqlite:///", so we start from path[10:]
@@ -23,6 +26,7 @@ def test_db() -> Generator[str, None, None]:
 
 
 def test_create_user(test_db: str) -> None:
+    """Test creating a user."""
     path = test_db
     with patch.dict("os.environ", {"PYTEST": "true", "PYTEST_DB": path}):
         user_data = {"name": "John", "fullname": "John Doe", "nickname": "johnny"}
@@ -35,6 +39,7 @@ def test_create_user(test_db: str) -> None:
 
 
 def test_get_user(test_db: str) -> None:
+    """Test retrieving a user."""
     path = test_db
     with patch.dict("os.environ", {"PYTEST": "true", "PYTEST_DB": path}):
         user_data = {"name": "Jane", "fullname": "Jane Doe", "nickname": "jane"}
@@ -53,6 +58,7 @@ def test_get_user(test_db: str) -> None:
 
 
 def test_delete_user(test_db: str) -> None:
+    """Test deleting a user."""
     path = test_db
 
     with patch.dict("os.environ", {"PYTEST": "true", "PYTEST_DB": path}):

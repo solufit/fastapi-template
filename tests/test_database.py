@@ -1,3 +1,5 @@
+"""This module contains tests for the Database class."""
+
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
 from sqlalchemy import text
@@ -7,18 +9,16 @@ from src.utils.database import Database
 
 
 def test_database_initialization_with_both_sqlite_and_mysql_params() -> None:
-    """
-    Test that Database initialization raises ValueError
-    when both sqlite_path and host, db_name, db_user, db_pass are provided.
+    """Test that Database initialization.
+
+    raises ValueError when both sqlite_path and host db_name, db_user, db_pass are provided.
     """
     with pytest.raises(ValueError, match="You can't provide both sqlite_path and host, db_name, db_user, db_pass"):
         Database(sqlite_path="sqlite:///test.db", host="localhost", db_name="test_db", db_user="user", db_pass="pass")  # noqa: S106
 
 
 def test_database_initialization_with_missing_mysql_params() -> None:
-    """
-    Test that Database initialization raises ValueError
-    """
+    """Test that Database initialization raises ValueError."""
     with pytest.raises(ValueError, match="You must provide host, db_name, db_user, db_pass"):
         Database(
             host="localhost",
@@ -29,8 +29,9 @@ def test_database_initialization_with_missing_mysql_params() -> None:
 
 
 def test_database_initialization_with_missing_env_vars(monkeypatch: MonkeyPatch) -> None:
-    """
-    Test that Database initialization raises ValueError when MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER are missing.
+    """Test that Database initialization.
+
+    Raises ValueError when MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER are missing.
     """
     monkeypatch.delenv("MYSQL_DATABASE", raising=False)
     monkeypatch.delenv("MYSQL_PASSWORD", raising=False)
@@ -40,9 +41,7 @@ def test_database_initialization_with_missing_env_vars(monkeypatch: MonkeyPatch)
 
 
 def test_database_connect_already_connected() -> None:
-    """
-    Test that Database.connect() does not re-create the engine if already connected.
-    """
+    """Test that Database.connect() does not re-create the engine if already connected."""
     db = Database(sqlite_path="sqlite:///:memory:")
     db.connect()
     engine_first = db.engine
@@ -52,9 +51,7 @@ def test_database_connect_already_connected() -> None:
 
 
 def test_database_session_commit() -> None:
-    """
-    Test that Database.session() commits the transaction.
-    """
+    """Test that Database.session() commits the transaction."""
     db = Database(sqlite_path="sqlite:///:memory:")
     db.connect()
     with db.session() as session:
@@ -63,9 +60,7 @@ def test_database_session_commit() -> None:
 
 
 def test_database_session_rollback() -> None:
-    """
-    Test that Database.session() rolls back the transaction on exception.
-    """
+    """Test that Database.session() rolls back the transaction on exception."""
     db = Database(sqlite_path="sqlite:///:memory:")
     db.connect()
     with pytest.raises(SQLAlchemyError), db.session() as session:
@@ -77,18 +72,14 @@ def test_database_session_rollback() -> None:
 
 
 def test_database_close_without_connection() -> None:
-    """
-    Test that Database.close() does not raise an exception when connection is not established.
-    """
+    """Test that Database.close() does not raise an exception when connection is not established."""
     db = Database(sqlite_path="sqlite:///:memory:")
     db.close()
     assert db.connection is False  # Should remain False
 
 
 def test_database_double_close() -> None:
-    """
-    Test that Database.close() does not raise an exception when called twice.
-    """
+    """Test that Database.close() does not raise an exception when called twice."""
     db = Database(sqlite_path="sqlite:///:memory:")
     db.connect()
     db.close()
@@ -97,36 +88,28 @@ def test_database_double_close() -> None:
 
 
 def test_database_del() -> None:
-    """
-    Test that Database.__del__() closes the connection without errors.
-    """
+    """Test that Database.__del__() closes the connection without errors."""
     db = Database(sqlite_path="sqlite:///:memory:")
     db.connect()
     del db  # Should call __del__ and close the connection without errors
 
 
 def test_database_connect_failure_wrong_path() -> None:
-    """
-    Test that Database.connect() raises SQLAlchemyError when connection fails.
-    """
+    """Test that Database.connect() raises SQLAlchemyError when connection fails."""
     db = Database(sqlite_path="invalid_db_path")
     with pytest.raises(SQLAlchemyError, match="Error connecting to the database"):
         db.connect()
 
 
 def test_database_engine_disposed_on_close() -> None:
-    """
-    Test that Database.engine is disposed on close.
-    """
+    """Test that Database.engine is disposed on close."""
     db = Database(sqlite_path="sqlite:///:memory:")
     db.connect()
     db.close()
 
 
 def test_database_session_after_close() -> None:
-    """
-    Test that Database.session() raises ValueError after close.
-    """
+    """Test that Database.session() raises ValueError after close."""
     db = Database(sqlite_path="sqlite:///:memory:")
     db.connect()
     db.close()
