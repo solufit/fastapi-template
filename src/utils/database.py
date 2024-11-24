@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import os
+from collections.abc import Generator
+from contextlib import contextmanager
 
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 
 from database.models import Base
 
@@ -78,6 +80,8 @@ class Database:
         Connect to the database.
         This function generate
             - engine: The SQLAlchemy engine object for the database connection.
+
+        return: Database object
         """
 
         if self.connection:
@@ -95,6 +99,37 @@ class Database:
             raise SQLAlchemyError(msg) from None
 
         return self
+
+    @contextmanager
+    def session(self) -> Generator[Session, None, None]:
+        """
+        Create a new session for the database connection.
+        This function generate
+            - session: The SQLAlchemy session object for the database connection.
+
+        Example:
+        ```python
+        db = Database().connect()
+        with db.session() as session:
+            session.query(User).all()
+        ```
+        """
+        if self.connection is False:
+            msg = "Database connection is not established"
+            raise ValueError(msg)
+
+        session_local = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
+        session = session_local()
+
+        try:
+            yield session
+            session.commit()
+        except SQLAlchemyError as e:
+            session.rollback()
+            msg = f"Error in session: {e}"
+            raise SQLAlchemyError(msg) from None
+        finally:
+            session.close()
 
     def __del__(self) -> None:
         self.close()
