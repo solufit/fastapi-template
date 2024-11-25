@@ -2,7 +2,7 @@ name: Update Coverage on Readme
 on:
   push:
     branches:
-      - "develop"
+      - "main"
 
 
 # https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
