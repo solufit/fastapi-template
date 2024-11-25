@@ -13,7 +13,7 @@ from sqlalchemy.orm.exc import DetachedInstanceError
 
 from database.models import Base
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Generator
 
 
@@ -103,9 +103,10 @@ class Database:
             db_name = os.getenv("MYSQL_DATABASE", "")
             db_pass = os.getenv("MYSQL_PASSWORD", "")
             db_user = os.getenv("MYSQL_USER", "")
+            db_host = os.getenv("MYSQL_HOST", "db")
 
             if db_name and db_pass and db_user:
-                self.db_path = f"mysql://{db_user}:{db_pass}@db/{db_name}"
+                self.db_path = f"mysql://{db_user}:{db_pass}@{db_host}/{db_name}"
             else:
                 msg = "You must provide env variables MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER"
                 raise ValueError(msg)

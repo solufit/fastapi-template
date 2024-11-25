@@ -115,3 +115,33 @@ def test_database_session_after_close() -> None:
     db.close()
     with pytest.raises(ValueError, match="Database connection is not established"), db.session():
         pass
+
+
+def test_pytest_on_auto_set_db_path(monkeypatch: MonkeyPatch) -> None:
+    """Test that Database.__init__() sets db_path to sqlite:///:memory: when pytest is enabled."""
+    monkeypatch.delenv("PYTEST", raising=False)
+    monkeypatch.delenv("PYTEST_DB", raising=False)
+
+    monkeypatch.setenv("PYTEST", "true")
+    db = Database()
+    db.connect()
+    assert db.db_path == "sqlite:///:memory:"
+
+
+def test_dbpath_with_env(monkeypatch: MonkeyPatch) -> None:
+    """Test that Database.__init__() sets db_path to mysql://user:pass@host/db_name when env variables are provided."""
+    monkeypatch.delenv("PYTEST", raising=False)
+    monkeypatch.delenv("PYTEST_DB", raising=False)
+
+    monkeypatch.setenv("MYSQL_DATABASE", "test_db")
+    monkeypatch.setenv("MYSQL_PASSWORD", "pass")
+    monkeypatch.setenv("MYSQL_USER", "user")
+    monkeypatch.setenv("MYSQL_HOST", "db")
+    db = Database()
+    assert db.db_path == "mysql://user:pass@db/test_db"
+
+
+def test_dbpath_with_arg() -> None:
+    """Test that Database.__init__() sets db_path to sqlite:///test.db when sqlite_path is provided."""
+    db = Database(host="localhost", db_name="test_db", db_user="user", db_pass="pass")
+    assert db.db_path == "mysql://user:pass@localhost/test_db"
