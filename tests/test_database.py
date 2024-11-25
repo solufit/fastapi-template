@@ -143,5 +143,5 @@ def test_dbpath_with_env(monkeypatch: MonkeyPatch) -> None:
 
 def test_dbpath_with_arg() -> None:
     """Test that Database.__init__() sets db_path to sqlite:///test.db when sqlite_path is provided."""
-    db = Database(host="localhost", db_name="test_db", db_user="user", db_pass="pass")
+    db = Database(host="localhost", db_name="test_db", db_user="user", db_pass="pass")  # noqa: S106
     assert db.db_path == "mysql://user:pass@localhost/test_db"
