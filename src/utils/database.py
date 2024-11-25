@@ -42,7 +42,7 @@ class Database:
 
     db_path = ""
     connection = False
-    endgine: Engine | None = None
+    engine: Engine | None = None
 
     def __init__(
         self,
@@ -179,11 +179,7 @@ class Database:
         This method disposes of the SQLAlchemy engine, effectively closing the connection to the database.
         It also sets the `connection` attribute to `False` to indicate that the connection is no longer active.
         """
-        try:
-            if self.engine:
-                self.engine.dispose()
-        except AttributeError:
-            pass
-        finally:
-            self.endgine = None
-            self.connection = False
+        if self.engine:
+            self.engine.dispose()
+        self.engine = None
+        self.connection = False
