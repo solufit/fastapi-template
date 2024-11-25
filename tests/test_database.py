@@ -145,3 +145,23 @@ def test_dbpath_with_arg() -> None:
     """Test that Database.__init__() sets db_path to sqlite:///test.db when sqlite_path is provided."""
     db = Database(host="localhost", db_name="test_db", db_user="user", db_pass="pass")  # noqa: S106
     assert db.db_path == "mysql://user:pass@localhost/test_db"
+
+
+def test_close_with_engine() -> None:
+    """Test that Database.close() does not raise an exception when connection is not established."""
+    db = Database(sqlite_path="sqlite:///:memory:")
+    db.connect()
+    assert db.connection is True
+    db.close()
+    assert db.connection is False  # Should remain False
+
+
+def test_close_without_engine(monkeypatch: MonkeyPatch) -> None:
+    """Test that Database.close() does not raise an exception when connection is not established."""
+    monkeypatch.setenv("PYTEST", "true")
+    monkeypatch.delenv("PYTEST_DB", raising=False)
+
+    db = Database()
+    db.connect()
+    db.close()
+    assert db.connection is False  # Should remain False
