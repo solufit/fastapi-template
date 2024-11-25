@@ -80,3 +80,20 @@ def test_delete_user(test_db: str) -> None:
 
         response = client.get(f"/v1/users/{db_user.id}")
         assert response.status_code == 404
+
+
+def test_delete_user_notfound(test_db: str) -> None:
+    """Test deleting a user who has not registered."""
+    path = test_db
+    with patch.dict("os.environ", {"PYTEST": "true", "PYTEST_DB": path}):
+        db = Database()
+        db.connect()
+
+        user_id = "-1"
+
+        response = client.delete(f"/v1/users/{user_id}")
+
+        assert response.status_code == 404
+
+        data = response.json()
+        assert data["detail"] == "User not found"
