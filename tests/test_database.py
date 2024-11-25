@@ -165,3 +165,4 @@ def test_close_without_engine(monkeypatch: MonkeyPatch) -> None:
     db.connect()
     db.close()
     assert db.connection is False  # Should remain False
+    assert db.engine is None

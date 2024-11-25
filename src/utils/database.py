@@ -42,7 +42,7 @@ class Database:
 
     db_path = ""
     connection = False
-    endgine: Engine | None = None
+    engine: Engine | None = None
 
     def __init__(
         self,
@@ -185,5 +185,5 @@ class Database:
         except AttributeError:
             pass
         finally:
-            self.endgine = None
+            self.engine = None
             self.connection = False
