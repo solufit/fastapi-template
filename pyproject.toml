@@ -17,7 +17,8 @@ lint.select = ["ALL"]
 target-version = "py312"
 
 exclude = [
-    "database/versions"
+    "database/versions",
+    "docs/*"
 ]
 
 [tool.ruff.lint.per-file-ignores]
