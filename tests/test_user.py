@@ -1,3 +1,5 @@
+"""This module contains tests for user-related operations."""
+
 import random
 import tempfile
 from collections.abc import Generator
@@ -16,6 +18,7 @@ client = TestClient(app)
 
 @pytest.fixture
 def test_db() -> Generator[str, None, None]:
+    """Fixture for creating a temporary test database."""
     path = f"sqlite:///{tempfile.gettempdir()}/{random.randint(1,1000)}test.db"
     yield path
     # path[0:10] is "sqlite:///", so we start from path[10:]
@@ -23,6 +26,7 @@ def test_db() -> Generator[str, None, None]:
 
 
 def test_create_user(test_db: str) -> None:
+    """Test creating a user."""
     path = test_db
     with patch.dict("os.environ", {"PYTEST": "true", "PYTEST_DB": path}):
         user_data = {"name": "John", "fullname": "John Doe", "nickname": "johnny"}
@@ -35,16 +39,15 @@ def test_create_user(test_db: str) -> None:
 
 
 def test_get_user(test_db: str) -> None:
+    """Test retrieving a user."""
     path = test_db
     with patch.dict("os.environ", {"PYTEST": "true", "PYTEST_DB": path}):
         user_data = {"name": "Jane", "fullname": "Jane Doe", "nickname": "jane"}
         db_user = User(name=user_data["name"], fullname=user_data["fullname"], nickname=user_data["nickname"])
         db = Database()
         db.connect()
-        session = db.SessionLocal()
-        session.add(db_user)
-        session.commit()
-        session.refresh(db_user)
+        with db.session() as session:
+            session.add(db_user)
 
         response = client.get(f"/v1/users/{db_user.id}")
         assert response.status_code == 200
@@ -55,6 +58,7 @@ def test_get_user(test_db: str) -> None:
 
 
 def test_delete_user(test_db: str) -> None:
+    """Test deleting a user."""
     path = test_db
 
     with patch.dict("os.environ", {"PYTEST": "true", "PYTEST_DB": path}):
@@ -63,11 +67,9 @@ def test_delete_user(test_db: str) -> None:
 
         db = Database()
         db.connect()
-        session = db.SessionLocal()
 
-        session.add(db_user)
-        session.commit()
-        session.refresh(db_user)
+        with db.session() as session:
+            session.add(db_user)
 
         response = client.delete(f"/v1/users/{db_user.id}")
         assert response.status_code == 200
@@ -78,3 +80,20 @@ def test_delete_user(test_db: str) -> None:
 
         response = client.get(f"/v1/users/{db_user.id}")
         assert response.status_code == 404
+
+
+def test_delete_user_notfound(test_db: str) -> None:
+    """Test deleting a user who has not registered."""
+    path = test_db
+    with patch.dict("os.environ", {"PYTEST": "true", "PYTEST_DB": path}):
+        db = Database()
+        db.connect()
+
+        user_id = "-1"
+
+        response = client.delete(f"/v1/users/{user_id}")
+
+        assert response.status_code == 404
+
+        data = response.json()
+        assert data["detail"] == "User not found"

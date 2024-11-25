@@ -1,3 +1,5 @@
+"""This module defines the SQLAlchemy models and database setup."""
+
 import os
 from typing import Any
 
@@ -27,6 +29,8 @@ Base: Any = declarative_base()
 
 
 class User(Base):
+    """SQLAlchemy User model for the users table."""
+
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
@@ -35,4 +39,5 @@ class User(Base):
     nickname = Column(String(255))
 
     def __repr__(self) -> str:
+        """Return a string representation of the User instance."""
         return f"<User('name={self.name}', fullname={self.fullname}, nickname={self.nickname})>"

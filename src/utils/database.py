@@ -1,88 +1,189 @@
-import os
+"""This module provides the Database class for managing database connections and sessions."""
 
-from sqlalchemy import create_engine
+from __future__ import annotations
+
+import os
+from contextlib import contextmanager, suppress
+from typing import TYPE_CHECKING
+
+from sqlalchemy import Engine, create_engine
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm.exc import DetachedInstanceError
 
 from database.models import Base
 
+if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Generator
+
 
 class Database:
-    """
-    A class representing a database connection.
+    """The `Database` class provides an interface for connecting to and interacting with a database.
+
+    It supports both SQLite and MySQL databases, allowing for flexible configuration through
+    direct parameters or environment variables. The class also supports a testing mode using pytest,
+    enabling the use of an in-memory SQLite database.
 
     Attributes:
-        host (str): The hostname of the database server.
-        database (str): The name of the database.
-        user (str): The username for the database connection.
-        password (str): The password for the database connection.
-        engine: The SQLAlchemy engine object for the database connection.
-        SessionLocal: The SQLAlchemy sessionmaker object for creating database sessions.
+        db_path (str): The database connection string.
+        connection (bool): Indicates whether a connection to the database has been established.
+        pytest_enabled (bool): Indicates whether pytest is enabled. If env PYTEST is set to true, this will be True.
+
+    Methods:
+        connect() -> Database:
+            Establishes a connection to the database.
+
+        session() -> Generator[Session, None, None]:
+            Provides a context manager for database sessions.
+
+        close() -> None:
+            Closes the database connection.
     """
 
-    def __init__(self, sqlite_path: str | None = None) -> None:
-        self.host = "db"
-        self.sqlite_path = sqlite_path
+    db_path = ""
+    connection = False
+    endgine: Engine | None = None
 
-        try:
-            if os.environ["PYTEST"] == "true":
-                self.sqlite_path = os.environ["PYTEST_DB"]
-        except KeyError:
-            pass
+    def __init__(
+        self,
+        sqlite_path: str | None = None,
+        host: str | None = None,
+        db_name: str | None = None,
+        db_user: str | None = None,
+        db_pass: str | None = None,
+    ) -> None:
+        """Initialize the Database class.
 
-        try:
-            self.database = os.environ["MYSQL_DATABASE"]
-            self.user = os.environ["MYSQL_USER"]
-            self.password = os.environ["MYSQL_PASSWORD"]
-        except KeyError as e:
-            try:
-                _ = os.environ["PYTEST"] != "true"
-            except KeyError:
-                msg = f"Error reading environment variables: {e}"
-                raise KeyError(msg) from None
+        If env PYTEST is set to true, it will use the env PYTEST_DB as the database path
+        and, sqlite_path, host, db_name, db_user, db_pass will be ignored.
 
-        # Read PYTEST and PYTEST_DB environment variables
-        pytest_env = os.getenv("PYTEST", "false").lower()
-        pytest_db = os.getenv("PYTEST_DB")
+        And,if sqlite_path, host, db_name, db_user, db_pass is not provided,
+        it will read the values from the environment variables
+        - MYSQL_DATABASE
+        - MYSQL_PASSWORD
+        - MYSQL_USER.
 
-        # Set sqlite_path to PYTEST_DB if PYTEST is true
-        if pytest_env == "true" and pytest_db:
-            self.sqlite_path = pytest_db
-
-    def connect(self) -> None:
+        Args:
+            sqlite_path (str | None): The path to the SQLite database.
+            host (str | None): The hostname of the database server.
+            db_name (str | None): The name of the database.
+            db_user (str | None): The username for the database connection.
+            db_pass (str | None): The password for the database connection.
         """
-        Connect to the database.
-        This function generate
-            - engine: The SQLAlchemy engine object for the database connection.
-            - SessionLocal: The SQLAlchemy sessionmaker object for creating database sessions.
-        """
+        self.pytest_enabled = os.getenv("PYTEST", "false").lower() == "true"
+        pytest_path = os.getenv("PYTEST_DB", "")
 
-        try:
-            if self.sqlite_path is None:
-                connection_string = f"mysql://{self.user}:{self.password}@{self.host}/{self.database}"
+        # if pytest is enabled, set the db path to the pytest_path
+        # if not provided pytest_path, set it to in-memory sqlite
+        if self.pytest_enabled:
+            if not pytest_path:
+                pytest_path = "sqlite:///:memory:"
+            self.db_path = pytest_path
+
+        # you can't provide both sqlite_path and host, db_name, db_user, db_pass
+        elif sqlite_path and (host or db_name or db_user or db_pass):
+            msg = "You can't provide both sqlite_path and host, db_name, db_user, db_pass"
+            raise ValueError(msg)
+
+        # if sqlite_path provided, set the db_path to sqlite_path
+        elif sqlite_path:
+            self.db_path = sqlite_path
+
+        # if host, db_name, db_user, db_pass provided, set the db_path to mysql
+        elif host or db_name or db_user or db_pass:
+            # check all the required fields are provided
+            if not all([host, db_name, db_user, db_pass]):
+                msg = "You must provide host, db_name, db_user, db_pass"
+                raise ValueError(msg)
+
+            self.db_path = f"mysql://{db_user}:{db_pass}@{host}/{db_name}"
+
+        # if nothing provided, read value from env
+        else:
+            db_name = os.getenv("MYSQL_DATABASE", "")
+            db_pass = os.getenv("MYSQL_PASSWORD", "")
+            db_user = os.getenv("MYSQL_USER", "")
+            db_host = os.getenv("MYSQL_HOST", "db")
+
+            if db_name and db_pass and db_user:
+                self.db_path = f"mysql://{db_user}:{db_pass}@{db_host}/{db_name}"
             else:
-                connection_string = os.getenv("PYTEST_DB", "")
-            self.engine = create_engine(connection_string)
-            self.SessionLocal = sessionmaker(bind=self.engine)
-            self.SessionLocal.configure(expire_on_commit=False)
+                msg = "You must provide env variables MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER"
+                raise ValueError(msg)
 
-            try:
-                if os.environ["PYTEST"] == "true":
-                    Base.metadata.create_all(self.engine)
+    def connect(self) -> Database:
+        """Connect to the database.
 
-            except KeyError:
-                pass
+        This function generates
+            - engine: The SQLAlchemy engine object for the database connection.
+
+        return: Database object
+        """
+        if self.connection:
+            return self
+
+        try:
+            self.engine = create_engine(self.db_path)
+
+            # create all tables if pytest is enabled
+            if self.pytest_enabled:
+                Base.metadata.create_all(self.engine)
 
         except SQLAlchemyError as e:
             msg = f"Error connecting to the database: {e}"
             raise SQLAlchemyError(msg) from None
 
-    def __del__(self) -> None:
-        self._close()
+        self.connection = True
 
-    def _close(self) -> None:
+        return self
+
+    @contextmanager
+    def session(self) -> Generator[Session, None, None]:
+        """Create a new session for the database connection.
+
+        This function generate
+            - session: The SQLAlchemy session object for the database connection.
+
+        Example:
+        ```python
+        db = Database().connect()
+        with db.session() as session:
+            session.query(User).all()
+        ```
+        """
+        if self.connection is False:
+            msg = "Database connection is not established"
+            raise ValueError(msg)
+
+        session_local = sessionmaker(autocommit=False, autoflush=False, bind=self.engine, expire_on_commit=False)
+        session = session_local()
+
+        try:
+            yield session
+            session.commit()
+        except SQLAlchemyError as e:
+            session.rollback()
+            msg = f"Error in session: {e}"
+            raise SQLAlchemyError(msg) from None
+        finally:
+            with suppress(DetachedInstanceError):
+                session.close()
+
+    def __del__(self) -> None:
+        """Close the database connection when the object is deleted."""
+        self.close()
+
+    def close(self) -> None:
+        """Close the database connection.
+
+        This method disposes of the SQLAlchemy engine, effectively closing the connection to the database.
+        It also sets the `connection` attribute to `False` to indicate that the connection is no longer active.
+        """
         try:
             if self.engine:
                 self.engine.dispose()
         except AttributeError:
             pass
+        finally:
+            self.endgine = None
+            self.connection = False

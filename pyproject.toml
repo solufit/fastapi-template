@@ -12,9 +12,6 @@ line-length = 120
 ## select: 指定したルールをチェックの対象とする
 lint.select = ["ALL"]
 ## ignore: 指定したルールをチェックの対象としない
-lint.ignore = [
-    "D", # Docstringを中途半端にしか書いていないので、除外する
-]
 
 # Assume Python 3.12
 target-version = "py312"
@@ -76,7 +73,7 @@ ignore_missing_imports = true
 packages = ["src"]
 
 [tool.pytest.ini_options]
-addopts = "-v -s"
+addopts = "-v -s --ignore=*/database/*"
 testpaths = [
     "tests",
 ]
