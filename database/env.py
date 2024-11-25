@@ -1,3 +1,5 @@
+"""This module sets up the Alembic context for database migrations."""
+
 import os
 from logging.config import fileConfig
 
