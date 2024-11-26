@@ -68,6 +68,7 @@ warn_redundant_casts = true  # 冗長なキャストに警告
 module = [
     'requests/*',
     'psutil',
+    'docs/*',
 ]
 ignore_missing_imports = true
 
