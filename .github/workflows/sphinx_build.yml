@@ -1,4 +1,4 @@
-name: Update Coverage on Readme
+name: Build Sphinx Documentation
 on:
   push:
     branches:
@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r docs/requirements-test.txt
+          pip install -r docs/requirements.txt
           
       - name: Build Sphinx documentation
         run: |
