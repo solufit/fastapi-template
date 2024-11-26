@@ -27,4 +27,9 @@
     "ruff.format.args": [
         "--config=pyproject.toml"
     ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+        "--cov=src"
+    ]
 }

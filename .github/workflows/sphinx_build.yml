@@ -31,27 +31,18 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements-test.txt
-          pip install -r src/requirements.txt
+          pip install -r docs/requirements-test.txt
           
-      - name: Build coverage file
+      - name: Build Sphinx documentation
         run: |
           set -o pipefail
-          pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=src --cov-branch | tee pytest-coverage.txt
-
-      - name: Pytest coverage comment
-        id: coverageComment
-        uses: MishaKav/pytest-coverage-comment@main
+          bash scripts/build_docs.sh
+      
+      - name: Push to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          hide-comment: true
-          pytest-coverage-path: ./pytest-coverage.txt
-
-      - name: Update Readme with Coverage Html
-        run: |
-          sed -i '/<!-- Pytest Coverage Comment:Begin -->/,/<!-- Pytest Coverage Comment:End -->/c\<!-- Pytest Coverage Comment:Begin -->\n\${{ steps.coverageComment.outputs.coverageHtml }}\n<!-- Pytest Coverage Comment:End -->' ./README.md
-
-      - name: Commit & Push changes to Readme
-        uses: actions-js/push@master
-        with:
-          message: Update coverage on Readme
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: /tmp/output/html
+          user_name: GitHub Actions
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          

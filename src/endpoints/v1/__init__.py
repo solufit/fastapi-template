@@ -1,3 +1,5 @@
+"""This module contains the API v1 endpoints."""
+
 from fastapi import APIRouter
 
 from .user import router as user_router
