@@ -1,0 +1,18 @@
+src.endpoints package
+=====================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   src.endpoints.v1
+
+Module contents
+---------------
+
+.. automodule:: src.endpoints
+   :members:
+   :undoc-members:
+   :show-inheritance:

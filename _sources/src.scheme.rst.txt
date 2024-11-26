@@ -1,0 +1,29 @@
+src.scheme package
+==================
+
+Submodules
+----------
+
+src.scheme.user module
+----------------------
+
+.. automodule:: src.scheme.user
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.scheme.version module
+-------------------------
+
+.. automodule:: src.scheme.version
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: src.scheme
+   :members:
+   :undoc-members:
+   :show-inheritance:

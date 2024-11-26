@@ -1,0 +1,29 @@
+src.endpoints.v1 package
+========================
+
+Submodules
+----------
+
+src.endpoints.v1.user module
+----------------------------
+
+.. automodule:: src.endpoints.v1.user
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.endpoints.v1.version module
+-------------------------------
+
+.. automodule:: src.endpoints.v1.version
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: src.endpoints.v1
+   :members:
+   :undoc-members:
+   :show-inheritance:
