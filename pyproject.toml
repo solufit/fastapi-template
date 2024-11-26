@@ -17,7 +17,9 @@ lint.select = ["ALL"]
 target-version = "py312"
 
 exclude = [
-    "database/versions"
+    "database/versions",
+    "docs/*",
+    "docs/source/conf"
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -60,12 +62,16 @@ disallow_untyped_defs = true  # 関数定義の引数/戻り値に型アノテ�
 no_implicit_optional = true  # デフォルト引数に None を取る場合型アノテーションに Optional 必須
 check_untyped_defs = true  # 型注釈がない関数やメソッドに対して型チェックを行う
 warn_redundant_casts = true  # 冗長なキャストに警告
+exclude = '''(?x)(
+    docs/*
+)'''
 
 [[tool.mypy.overrides]]
 # サードパーティの[import-untyped]を無視する
 module = [
     'requests/*',
     'psutil',
+    'docs/*',
 ]
 ignore_missing_imports = true
 
@@ -88,3 +94,4 @@ python_classes = [
 python_functions = [
     "test_*",
 ]
+
