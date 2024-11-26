@@ -6,6 +6,6 @@ cd ..
 pip install -r ./docs/requirements.txt
 sphinx-apidoc -f -o ./docs/source src tests
 
-mkdir /tmp/output
+cd docs
 
-sphinx-build -M html docs/source /tmp/output
+make html
