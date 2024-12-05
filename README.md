@@ -53,52 +53,63 @@ This template is optimized for use with Visual Studio Code.
 
 ## Directory Structure
 
-```
+``` bash
 fastapi-template
-|-- LICENSE
-|-- README.md
-|-- alembic.ini
-|-- database # Contains database-related files and migration scripts.
-|   |-- README
-|   |-- __init__.py
-|   |-- env.py
-|   |-- models.py # Defines SQLAlchemy ORM models.
-|   |-- script.py.mako
-|   `-- versions
-|       |-- cbc697a95795_init_database.py
-|       `-- fa9c8b7e809a_fix_type.py
-|-- docker
-|   `-- api
-|       `-- dockerfile
-|-- docker-compose-prod.yml
-|-- docker-compose.yml
-|-- example.env # Example environment variable file. Copy to .env and modify as needed
-|-- log_config.yaml # Logging configuration files. 
-|-- log_config_debug.yaml # Logging configuration files. Used for debugging.
-|-- pyproject.toml
-|-- requirements-test.txt
-|-- requirements.txt -> ./src/requirements.txt
-|-- src
-|   |-- __init__.py
-|   |-- app.py # Main FastAPI application file.
-|   |-- endpoints # API endpoints.
-|   |   |-- __init__.py
-|   |   `-- v1 # Version 1 of the API endpoints.
-|   |       |-- __init__.py
-|   |       `-- version.py
-|   |-- requirements.txt
-|   |-- scheme # Pydantic schemas for request/response models.
-|   |   |-- __init__.py
-|   |   `-- version.py
-|   `-- utils
-|       |-- __init__.py
-|       `-- database.py # Contains Database connection and session management Class.
-|-- start.sh
-|-- tests # Contains test files.
-|   |-- __init__.py
-|   |-- test_database.py
-|   `-- test_version.py
-`-- update_depends.sh
+├── LICENSE
+├── README.md
+├── alembic.ini
+├── database
+│   ├── README
+│   ├── __init__.py
+│   ├── env.py
+│   ├── models.py
+│   ├── script.py.mako
+│   └── versions
+│       ├── cbc697a95795_init_database.py
+│       └── fa9c8b7e809a_fix_type.py
+├── docker
+│   └── api
+│       └── dockerfile
+├── docker-compose-prod.yml
+├── docker-compose.yml
+├── docs
+│   ├── Makefile
+├── example.env
+├── log_config.yaml
+├── log_config_debug.yaml
+├── pyproject.toml
+├── pytest.ini
+├── requirements-test.txt
+├── requirements.txt
+├── scripts
+│   └── build_docs.sh
+├── src
+│   ├── __init__.py
+│   ├── app.py
+│   ├── app.py,cover
+│   ├── app_detail.py
+│   ├── endpoints
+│   │   ├── __init__.py
+│   │   └── v1
+│   │       ├── __init__.py
+│   │       ├── user.py
+│   │       ├── version.py
+│   ├── requirements.txt
+│   ├── scheme
+│   │   ├── __init__.py
+│   │   ├── user.py
+│   │   └── version.py
+│   └── utils
+│       ├── __init__.py
+│       ├── database.py
+├── start.sh
+├── tests
+│   ├── __init__.py
+│   ├── test_database.py
+│   ├── test_user.py
+│   └── test_version.py
+└── update_depends.sh
+
 ```
 
 ## Git rule
