@@ -25,6 +25,9 @@ services:
     build:
       context: .
       dockerfile: ./docker/api/dockerfile
+
+    volumes:
+      - .:/workspaces
     restart: always
     ports:
       - 5000:5000
@@ -38,6 +41,8 @@ services:
     
     env_file:
       - .env
+      
+    command: ["sh", "/workspaces/start.sh"]
 
 networks:
   solufit:
