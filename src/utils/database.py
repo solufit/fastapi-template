@@ -31,7 +31,10 @@ class Database:
         engine (Engine | None): The SQLAlchemy engine object for the database connection.
 
     Methods:
-        __init__(sqlite_path: str | None = None, host: str | None = None, db_name: str | None = None, db_user: str | None = None, db_pass: str | None = None) -> None:
+        __init__(
+            sqlite_path: str | None = None, host: str | None = None, db_name: str | None = None,
+            db_user: str | None = None, db_pass: str | None = None
+        ) -> None:
             Initializes the Database class.
 
         connect() -> Database:
