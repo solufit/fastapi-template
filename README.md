@@ -16,8 +16,10 @@ This FastAPI-Template is a public GitHub template designed to help developers qu
 - **Docker Support**: Dockerfile and docker-compose configuration for containerization.
 - **Devcontainer Support**: Configuration for Visual Studio Code Dev Containers.
 - **GitHub Actions**: Automated testing using GitHub Actions.
-- **mypy**: Type checking with mypy.
+- **mypy**: Type checking h mypy.
 - **ruff**: Linting with ruff.
+- **Pytest**: Testing with pytest.
+- **Documentation**: Auto Generate Sphinx documentation with GitHub Pages integration.
 
 ## How to use this template
 
@@ -33,23 +35,37 @@ This template is optimized for use with Visual Studio Code.
 
 1. Ensure you have Docker and the Remote - Containers extension installed in VS Code.
 2. Open the project folder in VS Code.
-3. When prompted, click "Reopen in Container" or run the "Remote-Containers: Reopen in Container" command from the command palette.
-4. VS Code will build and start the development container, providing you with a fully configured environment.
+3. Create `env` file in the root directory and add the required environment variables. You can use the `example.env` file as a reference.
+4. When prompted, click "Reopen in Container" or run the "Remote-Containers: Reopen in Container" command from the command palette.
+5. VS Code will build and start the development container, providing you with a fully configured environment.
 
 ### Develop with Docker
 
 1. Ensure you have Docker and Docker Compose installed on your system.
-2. Run `docker-compose up -d` to start the development environment.
-3. Use your preferred editor to make changes to the code.
-4. The FastAPI application will be available at `http://localhost:8000`.
+2. Create a `.env` file in the root directory and add the required environment variables. You can use the `example.env` file as a reference.
+3. Run `docker-compose up -d` to start the development environment.
+4. Use your preferred editor to make changes to the code.
+5. The FastAPI application will be available at `http://localhost:8000`.
 
 ## Deploy
 
 ### Deploy with Docker Compose
 
 1. Ensure you have Docker and Docker Compose installed on your production server.
-2. Copy the `docker-compose.yml` file to your server.
-3. Run `docker-compose up -d` to start the application in production mode.
+2. Copy the Repository to your server.
+3. Create a `.env` file with the required environment variables. You can use the `example.env` file as a reference.
+4. Run `docker-compose -f docker-compose-prod.yml up -d` to start the production environment.
+
+## Testing
+
+This project uses Pytest for testing. To run the tests, execute the following command:
+
+```bash
+pytest
+```
+
+If you want to test with database interaction, Database class provides a testing mode that uses an in-memory SQLite database. This mode is enable when the `PYTEST` environment variable is set to `True`.
+You can override database connection information by setting the `PYTEST_DB` if `PYTEST` is set to `True`.
 
 ## Directory Structure
 
