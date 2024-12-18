@@ -159,7 +159,7 @@ class Database:
     def session(self) -> Generator[Session, None, None]:
         """Create a new session for the database connection.
 
-        This function generates
+        This function generate
             - session: The SQLAlchemy session object for the database connection.
 
         Example:
