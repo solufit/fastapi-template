@@ -18,6 +18,8 @@ This FastAPI-Template is a public GitHub template designed to help developers qu
 - **GitHub Actions**: Automated testing using GitHub Actions.
 - **mypy**: Type checking with mypy.
 - **ruff**: Linting with ruff.
+- **Pytest**: Testing with pytest.
+- **Documentation**: Auto Generate Sphinx documentation with GitHub Pages integration.
 
 ## How to use this template
 
@@ -33,72 +35,95 @@ This template is optimized for use with Visual Studio Code.
 
 1. Ensure you have Docker and the Remote - Containers extension installed in VS Code.
 2. Open the project folder in VS Code.
-3. When prompted, click "Reopen in Container" or run the "Remote-Containers: Reopen in Container" command from the command palette.
-4. VS Code will build and start the development container, providing you with a fully configured environment.
+3. Create `env` file in the root directory and add the required environment variables. You can use the `example.env` file as a reference.
+4. When prompted, click "Reopen in Container" or run the "Remote-Containers: Reopen in Container" command from the command palette.
+5. VS Code will build and start the development container, providing you with a fully configured environment.
 
 ### Develop with Docker
 
 1. Ensure you have Docker and Docker Compose installed on your system.
-2. Run `docker-compose up -d` to start the development environment.
-3. Use your preferred editor to make changes to the code.
-4. The FastAPI application will be available at `http://localhost:8000`.
+2. Create a `.env` file in the root directory and add the required environment variables. You can use the `example.env` file as a reference.
+3. Run `docker-compose up -d` to start the development environment.
+4. Use your preferred editor to make changes to the code.
+5. The FastAPI application will be available at `http://localhost:8000`.
 
 ## Deploy
 
 ### Deploy with Docker Compose
 
 1. Ensure you have Docker and Docker Compose installed on your production server.
-2. Copy the `docker-compose.yml` file to your server.
-3. Run `docker-compose up -d` to start the application in production mode.
+2. Copy the Repository to your server.
+3. Create a `.env` file with the required environment variables. You can use the `example.env` file as a reference.
+4. Run `docker-compose -f docker-compose-prod.yml up -d` to start the production environment.
+
+## Testing
+
+This project uses Pytest for testing. To run the tests, execute the following command:
+
+```bash
+pytest
+```
+
+If you want to test with database interaction, Database class provides a testing mode that uses an in-memory SQLite database. This mode is enabled when the `PYTEST` environment variable is set to `True`.
+You can override database connection information by setting the `PYTEST_DB` if `PYTEST` is set to `True`.
 
 ## Directory Structure
 
-```
+```bash
 fastapi-template
-|-- LICENSE
-|-- README.md
-|-- alembic.ini
-|-- database # Contains database-related files and migration scripts.
-|   |-- README
-|   |-- __init__.py
-|   |-- env.py
-|   |-- models.py # Defines SQLAlchemy ORM models.
-|   |-- script.py.mako
-|   `-- versions
-|       |-- cbc697a95795_init_database.py
-|       `-- fa9c8b7e809a_fix_type.py
-|-- docker
-|   `-- api
-|       `-- dockerfile
-|-- docker-compose-prod.yml
-|-- docker-compose.yml
-|-- example.env # Example environment variable file. Copy to .env and modify as needed
-|-- log_config.yaml # Logging configuration files. 
-|-- log_config_debug.yaml # Logging configuration files. Used for debugging.
-|-- pyproject.toml
-|-- requirements-test.txt
-|-- requirements.txt -> ./src/requirements.txt
-|-- src
-|   |-- __init__.py
-|   |-- app.py # Main FastAPI application file.
-|   |-- endpoints # API endpoints.
-|   |   |-- __init__.py
-|   |   `-- v1 # Version 1 of the API endpoints.
-|   |       |-- __init__.py
-|   |       `-- version.py
-|   |-- requirements.txt
-|   |-- scheme # Pydantic schemas for request/response models.
-|   |   |-- __init__.py
-|   |   `-- version.py
-|   `-- utils
-|       |-- __init__.py
-|       `-- database.py # Contains Database connection and session management Class.
-|-- start.sh
-|-- tests # Contains test files.
-|   |-- __init__.py
-|   |-- test_database.py
-|   `-- test_version.py
-`-- update_depends.sh
+├── LICENSE
+├── README.md
+├── alembic.ini                    # Alembic configuration for database migrations
+├── database                       # Database-related files and migrations
+│   ├── README
+│   ├── __init__.py
+│   ├── env.py                     # Alembic environment settings
+│   ├── models.py                  # Database models defined with SQLAlchemy
+│   ├── script.py.mako
+│   └── versions                   # Database migration scripts
+│       ├── cbc697a95795_init_database.py
+│       └── fa9c8b7e809a_fix_type.py
+├── docker                         # Docker configuration files
+│   └── api
+│       └── dockerfile             # Dockerfile for building the API container
+├── docker-compose-prod.yml        # Docker Compose configuration for production
+├── docker-compose.yml             # Docker Compose configuration for development
+├── docs
+│   └── Makefile                   # Makefile for building documentation
+├── example.env                    # Example environment variables file
+├── log_config.yaml                # Logging configuration for production
+├── log_config_debug.yaml          # Logging configuration for debugging
+├── pyproject.toml                 # Project configuration and dependencies
+├── pytest.ini                     # Pytest configuration file
+├── requirements-test.txt          # Testing dependencies
+├── requirements.txt               # Application dependencies
+├── scripts
+│   └── build_docs.sh              # Script to build documentation
+├── src                            # Source code of the application
+│   ├── __init__.py
+│   ├── app.py                     # Main FastAPI application
+│   ├── app_detail.py              # Additional application configurations
+│   ├── endpoints                  # API endpoint definitions
+│   │   ├── __init__.py
+│   │   └── v1                     # Version 1 API endpoints
+│   │       ├── __init__.py        # Initializes the v1 endpoints, Includes the router
+│   │       ├── user.py            # Endpoints related to user operations
+│   │       └── version.py         # Endpoint to retrieve API version
+│   ├── requirements.txt
+│   ├── scheme                     # Pydantic models for data schemas
+│   │   ├── __init__.py
+│   │   ├── user.py                # Schemas for user data
+│   │   └── version.py             # Schema for version information
+│   └── utils                      # Utility modules
+│       ├── __init__.py
+│       └── database.py            # Database utility functions
+├── start.sh                       # Script to start the application
+├── tests
+│   ├── __init__.py
+│   ├── test_database.py           # Tests for database interactions
+│   ├── test_user.py               # Tests for user endpoints
+│   └── test_version.py            # Tests for version endpoint
+└── update_depends.sh              # Script to update dependencies
 ```
 
 ## Git rule
@@ -119,6 +144,11 @@ GitHub Actions are configured to run tests automatically on each pull request:
 - Performs type checking with mypy
 - Lints the code with ruff
 
+## Database Class
+
+The Database class offers a streamlined interface for managing database connections and sessions using SQLAlchemy. It supports both SQLite and MySQL databases, allowing configurations through direct parameters or environment variables. Additionally, the class includes a testing mode that utilizes an in-memory SQLite database, facilitating efficient testing with pytest. Key functionalities include establishing connections, handling sessions, and ensuring proper cleanup of resources.
+For details, please see [Documentation](https://solufit.github.io/fastapi-template/src.utils.html#src.utils.database.Database)
+
 ## Configuring linting and type checking
 
 ### Ruff (Linting)
@@ -127,7 +157,7 @@ To modify ruff linting rules, edit the `pyproject.toml` file in the root directo
 
 ### Mypy (Type Checking)
 
-To configure mypy type checking, add or modify the `[tool.mypy]` section in your `pyproject.toml` file. 
+To configure mypy type checking, add or modify the `[tool.mypy]` section in your `pyproject.toml` file.  
 
 You can adjust these settings based on how strict you want the type checking to be. For more options, refer to the [mypy configuration file documentation](https://mypy.readthedocs.io/en/stable/config_file.html).
 

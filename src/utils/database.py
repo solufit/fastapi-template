@@ -28,8 +28,15 @@ class Database:
         db_path (str): The database connection string.
         connection (bool): Indicates whether a connection to the database has been established.
         pytest_enabled (bool): Indicates whether pytest is enabled. If env PYTEST is set to true, this will be True.
+        engine (Engine | None): The SQLAlchemy engine object for the database connection.
 
     Methods:
+        __init__(
+            sqlite_path: str | None = None, host: str | None = None, db_name: str | None = None,
+            db_user: str | None = None, db_pass: str | None = None
+        ) -> None:
+            Initializes the Database class.
+
         connect() -> Database:
             Establishes a connection to the database.
 
@@ -38,6 +45,9 @@ class Database:
 
         close() -> None:
             Closes the database connection.
+
+        __del__() -> None:
+            Closes the database connection when the object is deleted.
     """
 
     db_path = ""
@@ -69,6 +79,10 @@ class Database:
             db_name (str | None): The name of the database.
             db_user (str | None): The username for the database connection.
             db_pass (str | None): The password for the database connection.
+
+        Raises:
+            ValueError: If both sqlite_path and MySQL parameters are provided,
+            or if required MySQL parameters are missing.
         """
         self.pytest_enabled = os.getenv("PYTEST", "false").lower() == "true"
         pytest_path = os.getenv("PYTEST_DB", "")
@@ -117,7 +131,11 @@ class Database:
         This function generates
             - engine: The SQLAlchemy engine object for the database connection.
 
-        return: Database object
+        Returns:
+            Database: The Database object itself.
+
+        Raises:
+            SQLAlchemyError: If there is an error connecting to the database.
         """
         if self.connection:
             return self
@@ -145,11 +163,18 @@ class Database:
             - session: The SQLAlchemy session object for the database connection.
 
         Example:
-        ```python
-        db = Database().connect()
-        with db.session() as session:
-            session.query(User).all()
-        ```
+            ```python
+            db = Database().connect()
+            with db.session() as session:
+                session.query(User).all()
+            ```
+
+        Yields:
+            Session: The SQLAlchemy session object.
+
+        Raises:
+            ValueError: If the database connection is not established.
+            SQLAlchemyError: If there is an error during the session.
         """
         if self.connection is False:
             msg = "Database connection is not established"
@@ -170,15 +195,15 @@ class Database:
                 session.close()
 
     def __del__(self) -> None:
-        """Close the database connection when the object is deleted."""
-        self.close()
-
-    def close(self) -> None:
         """Close the database connection.
 
         This method disposes of the SQLAlchemy engine, effectively closing the connection to the database.
         It also sets the `connection` attribute to `False` to indicate that the connection is no longer active.
         """
+        self.close()
+
+    def close(self) -> None:
+        """Close the database connection."""
         if self.engine:
             self.engine.dispose()
         self.engine = None
