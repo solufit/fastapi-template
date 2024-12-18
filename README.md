@@ -16,7 +16,7 @@ This FastAPI-Template is a public GitHub template designed to help developers qu
 - **Docker Support**: Dockerfile and docker-compose configuration for containerization.
 - **Devcontainer Support**: Configuration for Visual Studio Code Dev Containers.
 - **GitHub Actions**: Automated testing using GitHub Actions.
-- **mypy**: Type checking h mypy.
+- **mypy**: Type checking with mypy.
 - **ruff**: Linting with ruff.
 - **Pytest**: Testing with pytest.
 - **Documentation**: Auto Generate Sphinx documentation with GitHub Pages integration.
@@ -64,7 +64,7 @@ This project uses Pytest for testing. To run the tests, execute the following co
 pytest
 ```
 
-If you want to test with database interaction, Database class provides a testing mode that uses an in-memory SQLite database. This mode is enable when the `PYTEST` environment variable is set to `True`.
+If you want to test with database interaction, Database class provides a testing mode that uses an in-memory SQLite database. This mode is enabled when the `PYTEST` environment variable is set to `True`.
 You can override database connection information by setting the `PYTEST_DB` if `PYTEST` is set to `True`.
 
 ## Directory Structure
