@@ -46,4 +46,4 @@ echo Step3: Start FastAPI Server
 echo
 
 
-uvicorn src:app --reload --host 0.0.0.0 --port 5000 --log-config $LOG
+/usr/local/bin/uvicorn src:app --reload --host 0.0.0.0 --port 5000 --log-config $LOG
